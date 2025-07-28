@@ -1,9 +1,8 @@
 # QCryptoWidget/main.py
-
 import sys
 from PySide6.QtWidgets import QApplication
 
-# Correctly import the renamed class 'QCryptoWidget'
+# This import will now work because of Step 2
 from widget.ui.widget import QCryptoWidget
 
 def main():
@@ -15,9 +14,8 @@ def main():
     # Prevents the app from closing when the last window is hidden
     app.setQuitOnLastWindowClosed(False)
 
-    # Instantiate the correct class name
     widget = QCryptoWidget()
-    widget.show() # Initially show the widget
+    widget.show()
     
     sys.exit(app.exec())
 

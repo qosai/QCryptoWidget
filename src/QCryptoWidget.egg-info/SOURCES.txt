@@ -1,3 +1,5 @@
+LICENSE
+README.md
 setup.py
 src/QCryptoWidget.egg-info/PKG-INFO
 src/QCryptoWidget.egg-info/SOURCES.txt
@@ -5,3 +7,4 @@ src/QCryptoWidget.egg-info/dependency_links.txt
 src/QCryptoWidget.egg-info/entry_points.txt
 src/QCryptoWidget.egg-info/requires.txt
 src/QCryptoWidget.egg-info/top_level.txt
+src/widget/__init__.py

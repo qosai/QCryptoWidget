@@ -3,9 +3,9 @@
 
 a = Analysis(
     ['main.py'],
-    pathex=[],
+    pathex=['src'],
     binaries=[],
-    datas=[('about.txt', '.'), ('.env', '.'), ('coins.json', '.'), ('alarms.json', '.'), ('assets', 'assets')],
+    datas=[('about.txt', '.'), ('assets', 'assets')],
     hiddenimports=['PySide6.QtSvg', 'PySide6.QtNetwork'],
     hookspath=[],
     hooksconfig={},

@@ -36,7 +36,7 @@ cd QCryptoWidget
 
 --------------
 2. Get a CoinMarketCap API Key
-Go to CoinMarketCap API
+Go to CoinMarketCap.com  API
 
 Click “Get Your API Key Now” and sign up for a Basic (Free) plan
 
@@ -53,13 +53,16 @@ CMC_API_KEY="a1b2c3d4-e5f6-7890-1234-56789abcdef0"
 🧪 Usage
 Run from Source
 
-Install dependencies:
+1. Install dependencies:
   pip install -r requirements.txt
 
-Run the application:
+2. Install the project in editable mode (important):
+  pip install -e .
+
+3. Run the application:
   python main.py
 
-
+------------------------------------------
 
 
 📦 Create a Standalone Executable (.exe)
@@ -69,16 +72,9 @@ You can bundle everything into a .exe for Windows.
 pip install pyinstaller
 
 2. Build the Executable
-python -m PyInstaller --clean --name QCryptoWidget --onefile --windowed \
-  --icon="assets/icon.ico" \
-  --add-data "about.txt:." \
-  --add-data ".env:." \
-  --add-data "coins.json:." \
-  --add-data "alarms.json:." \
-  --add-data "assets:assets" \
-  --hidden-import=PySide6.QtSvg \
-  --hidden-import=PySide6.QtNetwork \
-  main.py
+run the bat file : 
+> compile_to_exe.bat
+
 
 3. Find Your App
 The executable will be in the dist/ folder:

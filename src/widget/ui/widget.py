@@ -4,7 +4,7 @@ import sys
 import time
 from pathlib import Path
 from typing import Dict, List
-import webbrowser # **CHANGE**: To open web links
+import webbrowser  # **CHANGE**: To open web links
 
 from PySide6.QtCore import (Qt, QTimer, QUrl, QPoint)
 from PySide6.QtGui import (QAction, QIcon)
@@ -15,7 +15,6 @@ from PySide6.QtWidgets import (
     QDialog, QListWidget, QLineEdit, QFileDialog, QListWidgetItem, QStyle
 )
 # **CHANGE**: pyqtgraph is no longer needed for the UI
-# import pyqtgraph as pg 
 
 # Import project modules
 from widget.config.config import load_config
@@ -69,8 +68,6 @@ QLabel#coinCodeLabel {
     color: white;
 }
 """
-
-# **CHANGE**: ChartDialog class is no longer needed and has been removed.
 
 # --- Alarm Dialog (Unchanged) ---
 class AlarmDialog(QDialog):
@@ -201,7 +198,6 @@ class QCryptoWidget(QWidget):
         self.coins = load_coins(self.coin_db_path)
         self.alarms = load_alarms(self.alarm_db_path)
         self.price_data: Dict[str, Dict] = {}
-        # **ENHANCEMENT**: State for the selected change interval
         self.change_interval = '24h'
         
         self.init_ui()
@@ -214,7 +210,7 @@ class QCryptoWidget(QWidget):
 
     def init_ui(self):
         self.setWindowTitle("QCryptoWidget")
-        self.setMinimumWidth(350) # Increased width for new dropdown
+        self.setMinimumWidth(350)
         self.setStyleSheet(DARK_STYLESHEET)
         self.setWindowFlags(Qt.WindowType.FramelessWindowHint | Qt.WindowType.WindowStaysOnTopHint | Qt.Tool)
 
@@ -247,11 +243,9 @@ class QCryptoWidget(QWidget):
         line.setFrameShadow(QFrame.Shadow.Sunken)
         self.main_layout.addWidget(line)
 
-        # Bottom controls layout
         controls_layout = QVBoxLayout()
         controls_layout.setContentsMargins(10, 5, 10, 10)
         
-        # Row 1: Refresh and Change Interval
         config_row_layout = QHBoxLayout()
         self.interval_combo = QComboBox()
         self.interval_combo.addItems(["5 min", "15 min", "1 hour"])
@@ -259,7 +253,6 @@ class QCryptoWidget(QWidget):
         config_row_layout.addWidget(QLabel("Refresh:"))
         config_row_layout.addWidget(self.interval_combo)
 
-        # **ENHANCEMENT**: Add dropdown for change interval
         self.change_combo = QComboBox()
         self.change_combo.addItems(["Change (24h)", "Change (7d)"])
         self.change_combo.currentTextChanged.connect(self.on_change_interval_selected)
@@ -267,7 +260,6 @@ class QCryptoWidget(QWidget):
         config_row_layout.addWidget(self.change_combo)
         controls_layout.addLayout(config_row_layout)
         
-        # Row 2: Action buttons
         button_row_layout = QHBoxLayout()
         add_btn = QPushButton("Add Coin (+)")
         add_btn.setToolTip("Add Coin")
@@ -279,7 +271,6 @@ class QCryptoWidget(QWidget):
         remove_btn.clicked.connect(self.remove_coin)
         button_row_layout.addWidget(remove_btn)
 
-        # ADD THE NEW BUTTON "ABOUT" HERE
         about_btn = QPushButton("About")
         about_btn.clicked.connect(self.show_about_dialog)
         button_row_layout.addWidget(about_btn)
@@ -295,32 +286,33 @@ class QCryptoWidget(QWidget):
         if event.button() == Qt.MouseButton.LeftButton:
             self.drag_pos = event.globalPosition().toPoint()
             event.accept()
+
     def mouseMoveEvent(self, event):
         if self.drag_pos:
             self.move(self.pos() + event.globalPosition().toPoint() - self.drag_pos)
             self.drag_pos = event.globalPosition().toPoint()
             event.accept()
+
     def mouseReleaseEvent(self, event):
         self.drag_pos = None
         event.accept()
 
-# In the QCryptoWidget class within src/widget/ui/widget.py
-
     def init_tray_icon(self):
         self.tray_icon = QSystemTrayIcon(self)
-
-        # **CHANGE**: Load the custom icon from the assets folder
-        icon_path = self.root_path / "assets" / "icon.ico"
+        icon_path = ""
+        if getattr(sys, 'frozen', False):
+            icon_path = Path(sys._MEIPASS) / "assets" / "icon.ico"
+        else:
+            icon_path = self.root_path / "assets" / "icon.ico"
 
         if icon_path.exists():
             icon = QIcon(str(icon_path))
         else:
-            print("Warning: Custom icon 'assets/icon.ico' not found. Using default system icon.")
+            print(f"Warning: Custom icon not found at '{icon_path}'. Using default system icon.")
             icon = self.style().standardIcon(QStyle.StandardPixmap.SP_ComputerIcon)
         
         self.tray_icon.setIcon(icon)
 
-        # ... the rest of the method is unchanged ...
         show_action = QAction("Show/Hide Widget", self)
         quit_action = QAction("Exit", self)
         show_action.triggered.connect(self.toggle_visibility)
@@ -356,7 +348,6 @@ class QCryptoWidget(QWidget):
             data = self.price_data[coin]
             price = data['price']
             
-            # **ENHANCEMENT**: Get the correct percent change based on user selection
             percent_change = data.get(f'percent_change_{self.change_interval}', 0)
             
             arrow = "●"
@@ -385,10 +376,8 @@ class QCryptoWidget(QWidget):
             price_text_label = QLabel(f"<b>${integer_part}</b><i>{fractional_part}</i>")
             price_text_label.setTextFormat(Qt.TextFormat.RichText)
             
-            # **CHANGE**: The button now opens a web URL
             chart_btn = QPushButton("Info")
             chart_btn.setFixedSize(60, 28)
-            # Pass the coin's slug to the click handler
             chart_btn.clicked.connect(lambda checked, slug=data['slug']: self.open_coin_url(slug))
             
             row_layout.addWidget(code_label)
@@ -413,12 +402,10 @@ class QCryptoWidget(QWidget):
             self.tray_icon.showMessage("API Error", "Could not fetch new prices.", QSystemTrayIcon.Warning)
 
     def on_change_interval_selected(self, text: str):
-        """Handle selection from the 'Change' dropdown."""
         if "24h" in text:
             self.change_interval = '24h'
         elif "7d" in text:
             self.change_interval = '7d'
-        # Redraw the UI with the new interval choice
         self.update_price_display()
 
     def set_update_interval(self):
@@ -459,35 +446,28 @@ class QCryptoWidget(QWidget):
             save_alarms(self.alarm_db_path, self.alarms)
 
     def open_coin_url(self, slug: str):
-        """Opens the CoinMarketCap page for the coin."""
         if not slug:
             QMessageBox.warning(self, "Error", "Could not determine the URL for this coin.")
             return
         url = f"https://coinmarketcap.com/currencies/{slug}/"
         webbrowser.open_new_tab(url)
 
-
-    # ADD ABOUT - THIS ENTIRE METHOD
     def show_about_dialog(self):
-        """Reads and displays the content of about.txt in an interactive message box."""
         about_file_path = self.root_path / "about.txt"
         try:
             with open(about_file_path, "r", encoding="utf-8") as f:
                 about_content = f.read()
             
-            # Create a message box instance for more control
             msg_box = QMessageBox(self)
             msg_box.setWindowTitle("About QCryptoWidget")
-            msg_box.setTextFormat(Qt.RichText)  # Set text format to handle HTML
+            msg_box.setTextFormat(Qt.RichText)
             msg_box.setText(about_content)
             msg_box.setIcon(QMessageBox.Information)
-            # Make text selectable and links clickable
             msg_box.setTextInteractionFlags(Qt.TextBrowserInteraction) 
             msg_box.exec()
 
         except FileNotFoundError:
             QMessageBox.warning(self, "Error", "about.txt file not found.")
-            
 
     def open_alarm_dialog(self):
         dialog = AlarmDialog(self.alarms.copy(), self.coins, self)
@@ -498,16 +478,22 @@ class QCryptoWidget(QWidget):
 
     def check_alarms(self):
         for alarm in self.alarms:
-            if alarm['coin'] not in self.price_data: continue
+            if alarm['coin'] not in self.price_data:
+                continue
             price = self.price_data[alarm['coin']]['price']
             percent_change = self.price_data[alarm['coin']]['percent_change_24h']
             threshold = alarm['threshold']
             triggered = False
-            if alarm['type'] == "Price above" and price > threshold: triggered = True
-            elif alarm['type'] == "Price below" and price < threshold: triggered = True
-            elif alarm['type'] == "% increase (24h)" and percent_change > threshold: triggered = True
-            elif alarm['type'] == "% decrease (24h)" and percent_change < -abs(threshold): triggered = True
-            if triggered: self.trigger_alarm_alert(alarm)
+            if alarm['type'] == "Price above" and price > threshold:
+                triggered = True
+            elif alarm['type'] == "Price below" and price < threshold:
+                triggered = True
+            elif alarm['type'] == "% increase (24h)" and percent_change > threshold:
+                triggered = True
+            elif alarm['type'] == "% decrease (24h)" and percent_change < -abs(threshold):
+                triggered = True
+            if triggered:
+                self.trigger_alarm_alert(alarm)
     
     def trigger_alarm_alert(self, alarm: Dict):
         message = f"Alarm for {alarm['coin']}: {alarm['type']} {alarm['threshold']}"

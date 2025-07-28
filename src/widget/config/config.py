@@ -6,19 +6,24 @@ from pathlib import Path
 import sys
 
 def get_project_root() -> Path:
-    """Finds the project root by looking for the .env file."""
-    # This is robust enough to work in both development and when installed.
-    # In development, it finds the .env file in the project root.
-    # When installed via setup.py, scripts might be elsewhere, so we search up.
-    current_path = Path.cwd()
-    if (current_path / ".env").exists():
-        return current_path
-    # Check parent directories if running from a different location
-    for parent in Path(__file__).resolve().parents:
-        if (parent / ".env").exists():
-            return parent
-    # Fallback if .env is not found
-    print("Error: .env file not found. Please ensure it is in the project root.", file=sys.stderr)
+    """
+    Finds the project root for both development and a packaged .exe file.
+    """
+    # Check if the application is running as a bundled executable
+    if getattr(sys, 'frozen', False):
+        # If so, the root is the directory of the executable
+        return Path(sys.executable).parent
+    else:
+        # Otherwise (running from .py source), find the root by looking for .env
+        current_path = Path.cwd()
+        if (current_path / ".env").exists():
+            return current_path
+        for parent in Path(__file__).resolve().parents:
+            if (parent / ".env").exists():
+                return parent
+    
+    # Fallback if no path is found
+    print("Error: Could not determine the project root directory.", file=sys.stderr)
     sys.exit(1)
 
 

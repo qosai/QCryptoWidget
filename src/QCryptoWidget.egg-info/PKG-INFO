@@ -7,6 +7,7 @@ Author-email: your.email@example.com
 Classifier: Programming Language :: Python :: 3
 Classifier: Operating System :: Microsoft :: Windows
 Classifier: Topic :: Office/Business :: Financial
+License-File: LICENSE
 Requires-Dist: PySide6>=6.5.0
 Requires-Dist: pyqtgraph>=0.13.0
 Requires-Dist: python-dotenv>=1.0.0
@@ -14,5 +15,6 @@ Requires-Dist: requests>=2.30.0
 Dynamic: author
 Dynamic: author-email
 Dynamic: classifier
+Dynamic: license-file
 Dynamic: requires-dist
 Dynamic: summary
