@@ -1,0 +1,14 @@
+[
+    {
+        "coin": "BTC",
+        "type": "Price below",
+        "threshold": 117000.0,
+        "sound": ""
+    },
+    {
+        "coin": "BTC",
+        "type": "Price above",
+        "threshold": 120000.0,
+        "sound": ""
+    }
+]

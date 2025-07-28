@@ -1,0 +1,6 @@
+QCryptoWidget - A Cryptocurrency Desktop Widget
+
+Developed by: Qosai Samara
+Project on GitHub: <a href="https://github.com/qosai/QCryptoWidget.git">https://github.com/qosai/QCryptoWidget.git</a>
+
+This project is open source. Feel free to contribute!
